@@ -1,60 +1,57 @@
 import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
+import CharacterList from './CharacterList'
 
-const characters = [
-  "Harry Potter",
-  "Ron Weasley",
-  "Luna Lovegood",
-  "Hermione Granger",
-  "Severus Snape",
-  "Ginny Weasley",
-  "Dumbledore",
-  "Draco Malfoy",
-  "Neville Longbottom",
-  "Bellatrix Lestrange",
-  "Sirius Black",
-  "Rubeus Hagrid",
-  "Cho Chang"
-]
+// const characters = [
+//   "Harry Potter",
+//   "Ron Weasley",
+//   "Luna Lovegood",
+//   "Hermione Granger",
+//   "Severus Snape",
+//   "Ginny Weasley",
+//   "Dumbledore",
+//   "Draco Malfoy",
+//   "Neville Longbottom",
+//   "Bellatrix Lestrange",
+//   "Sirius Black",
+//   "Rubeus Hagrid",
+//   "Cho Chang"
+// ]
 function App() {
-  const [searchTerm, setSearchTerm] = useState([])
-  const [searchResults, setSearchResults] = useState(characters)
+  const [characters, setCharacters] = useState([])
 
   useEffect(() => {
-    const results = characters.filter(character => {
-      return character.toLowerCase().includes(searchTerm.toLowerCase());
-    });
+    axios
+    .get('https://rickandmortyapi.com/api/character/')
+    .then(res => {
+      setCharacters(res.data.results)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 
-    setSearchResults(results)
+  }, [])
 
-  }, [searchTerm])
-
-  const handleChange= event => {
-    setSearchTerm(event.target.value)
-  }
 
 
   return (
     <div className="App">
-      <form>
-        <input
-        id= "name"
-        type= "text"
-        name= "textfield"
-        placeholder= "Search"
-        onChange = {handleChange}
-        value={searchTerm} />
-      </form>
-      <div>
-      <ul>
-        {searchResults.map(character => {
-          return <li key={character}>{character}</li>
-        })}
-      </ul>
-      </div>
+      <CharacterList character ={characters}/>
     </div>
   );
 }
 
 export default App;
+
+const CharacterCard = styled.div`
+border: 1px solid blue;
+width: 40%;
+height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+`
